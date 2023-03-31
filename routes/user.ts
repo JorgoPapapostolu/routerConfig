@@ -1,6 +1,7 @@
 import { Router, Request, Response, NextFunction } from "express";
 export const userRouter: Router = Router();
 import { body, validationResult } from "express-validator";
+import { checkUser } from "../middlewares/checkUser";
 import {
   getUsers,
   getUsersById,
@@ -11,7 +12,7 @@ import {
 
 userRouter.get("/", getUsers);
 
-userRouter.get("/:id", getUsersById);
+userRouter.get("/:id", checkUser, getUsersById);
 
 userRouter.post(
   "/",
@@ -40,7 +41,8 @@ userRouter.put(
     }
     next();
   },
+  checkUser,
   updateUser
 );
 
-userRouter.delete("/:id", deleteUser);
+userRouter.delete("/:id", checkUser, deleteUser);
