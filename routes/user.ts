@@ -6,6 +6,7 @@ import {
   getUsersById,
   postUser,
   updateUser,
+  deleteUser,
 } from "../controller/user";
 
 userRouter.get("/", getUsers);
@@ -41,3 +42,5 @@ userRouter.put(
   },
   updateUser
 );
+
+userRouter.delete("/:id", deleteUser);

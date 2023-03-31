@@ -7,7 +7,7 @@ export const getUsers = async (req: Request, res: Response) => {
     res.json({ data: rows });
   } catch (err) {
     console.log(err);
-    res.status(500).send("Internal Server Error");
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -18,11 +18,11 @@ export const getUsersById = async (req: Request, res: Response) => {
     if (rows.length > 0) {
       res.json({ data: rows });
     } else {
-      res.status(404).send("User not found");
+      res.status(404).json({ error: "User not found" });
     }
   } catch (err) {
     console.log(err);
-    res.status(500).send("Internal Server Error");
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -35,7 +35,7 @@ export const postUser = async (req: Request, res: Response) => {
     );
     res.json({ data: rows });
   } catch (err) {
-    res.status(500).send("Internal Server Error");
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -53,6 +53,20 @@ export const updateUser = async (req: Request, res: Response) => {
     );
     res.json({ data: result.rows });
   } catch (err) {
-    res.status(500).send("Internal Server Error");
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+export const deleteUser = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const { rows } = await pool.query("SELECT * FROM users WHERE id=$1", [id]);
+    if (rows.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    const result = await pool.query("DELETE FROM users WHERE id=$1 RETURNING *", [id]);
+    res.json({ data: result.rows });
+  } catch (err) {
+    res.status(500).json({ error: "internal Server Error" });
   }
 };
